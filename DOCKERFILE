@@ -1,0 +1,9 @@
+FROM python:3
+
+WORKDIR /home/app
+
+RUN pip install --no-cache-dir logging mastodon.py tomllib
+
+COPY . . 
+
+CMD ["python" "main.py"] 
