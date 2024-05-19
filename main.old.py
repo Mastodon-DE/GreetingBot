@@ -1,6 +1,13 @@
 from mastodon import Mastodon
 import tomllib
 import logging
+import os
+
+
+PAT = os.environ.get('PAT')
+NTFY = os.environ.get('NTFY')
+INSTANCE = os.environ.get('INSTANCE')
+
 
 def parse_toml():
     with open("./data/configuration.toml", "rb") as f:

@@ -2,26 +2,17 @@ import requests
 from mastodon import Mastodon
 import tomllib
 import logging
+import os
 
 
-def parse_toml():
-    with open("configuration.toml", "rb") as f:
-        global config
-        config = tomllib.load(f)
+PAT = os.environ.get('PAT')
+NTFY = os.environ.get('NTFY')
+INSTANCE = os.environ.get('INSTANCE')
 
-
-try:
-    parse_toml()
-    logging.info("Config file was loaded sucessfully")
-except (FileNotFoundError, tomllib.TOMLDecodeError):
-    logging.error("Config file could not be loaded. Inexistent or invalid")
-
-
-
-mastodon = Mastodon(access_token = config["access_token"], api_base_url = config["instance"])
+mastodon = Mastodon(access_token = PAT, api_base_url = INSTANCE)
 logging.info("Logged into Mastodon")
 
-resp = requests.get(config["webhook"], stream=True)
+resp = requests.get(NTFY, stream=True)
 for line in resp.iter_lines():
     if line["event"] == "account.created":
         username = line["object"]["username"]

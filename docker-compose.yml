@@ -1,6 +1,14 @@
 services:
   bot:
-    image: ghcr.io/mastodon-de/greetingbot
+    image: ghcr.io/mastodon.de/greetingbot
     container_name: GreetingBot
     volumes:
       - ./data/:/usr/src/app/data/
+    environment:
+      # NTFY Topic Link (json)
+      - NTFY=""
+      # The Mastodon Instance
+      - INSTANCE=""
+      # The Personal Access Token
+      - PAT=""
+      
