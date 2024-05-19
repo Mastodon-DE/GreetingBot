@@ -1,6 +1,6 @@
 services:
   bot:
-    image: ghcr.io/mastodon.de/greetingbot
+    image: ghcr.io/mastodon-de/greetingbot
     container_name: GreetingBot
     environment:
       # NTFY Topic Link (json)

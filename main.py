@@ -5,9 +5,9 @@ import logging
 import os
 
 
-PAT = os.environ.get('PAT')
-NTFY = os.environ.get('NTFY')
-INSTANCE = os.environ.get('INSTANCE')
+PAT = str(os.environ.get('PAT'))
+NTFY = str(os.environ.get('NTFY'))
+INSTANCE = str(os.environ.get('INSTANCE'))
 
 mastodon = Mastodon(access_token = PAT, api_base_url = INSTANCE)
 logging.info("Logged into Mastodon")
