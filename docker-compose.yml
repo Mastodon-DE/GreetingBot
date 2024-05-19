@@ -1,0 +1,6 @@
+services:
+  bot:
+    image: ghcr.io/mastodon-de/greetingbot
+    container_name: GreetingBot
+    volumes:
+      - ./data/:/usr/src/app/data/

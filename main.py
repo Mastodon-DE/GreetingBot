@@ -3,7 +3,7 @@ import tomllib
 import logging
 
 def parse_toml():
-    with open("configuration.toml", "rb") as f:
+    with open("./data/configuration.toml", "rb") as f:
         global config
         config = tomllib.load(f)
        
