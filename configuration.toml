@@ -4,3 +4,4 @@ access_token = ""
 # Your Instance URL here (with protocoll scheme)
 instance = "https://mastodon.de"
 
+webhook = ""

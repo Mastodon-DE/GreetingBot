@@ -1,32 +1,33 @@
+import requests
 from mastodon import Mastodon
 import tomllib
 import logging
 
+
 def parse_toml():
-    with open("./data/configuration.toml", "rb") as f:
+    with open("configuration.toml", "rb") as f:
         global config
         config = tomllib.load(f)
-       
+
+
+try:
+    parse_toml()
+    logging.info("Config file was loaded sucessfully")
+except (FileNotFoundError, tomllib.TOMLDecodeError):
+    logging.error("Config file could not be loaded. Inexistent or invalid")
 
 
 
-## Function for looping throught notifications
+mastodon = Mastodon(access_token = config["access_token"], api_base_url = config["instance"])
+logging.info("Logged into Mastodon")
 
-def greet_cycle():
+resp = requests.get(config["webhook"], stream=True)
+for line in resp.iter_lines():
+    if line["event"] == "account.created":
+        username = line["object"]["username"]
+        print(username)
 
-    users = []
-    ids = []
-
-    ## Feching user Accounts
-
-    for i in range(0, len(notification)):
-        users.append(notification[i]["account"]["acct"])
-        ids.append(notification[i]["id"])
-
-    # Sending welcome message to every user
-
-    for recipient in users:
-        mastodon.status_post(f"""## @{recipient} Willkommen auf Mastodon.de
+        mastodon.status_post(f"""## @{username} Willkommen auf Mastodon.de
 Schön, dass du dich registriert hast 🥳 
                      
 Damit du dich auf Mastodon.de :MastodonDE:​ wohlfühlst kannst du dich jeder Zeit an uns über den @MastodonDE Account wenden.
@@ -40,41 +41,4 @@ Eine schöne Zeit auf MastodonDE wünscht dir @feuerstein im Namen des MastodonD
 **[Info]** *Diese Nachricht ist automatisiert 🤖​.
 Bei Antwort erreichst du jedoch ein Team Mitglied :D*              
                     """, language="DE", visibility="direct")
-
-    # Deleting the old notification (avoids double sending the message to one user)    
     
-    for item in ids:
-        mastodon.notifications_dismiss(item)
-
-
-
-
-
-## Running everything
-
-
-## Exceptions for handling config file errors
-try:
-    parse_toml()
-except (NameError, FileNotFoundError):
-    logging.error("Can't read file! Does it exist? Is the toml syntax valid?")
-
-
-try:
-    mastodon = Mastodon(access_token = config["access_token"], api_base_url= config["instance"])
-    
-except KeyError:
-    logging.error("Could not find every necessary config options")
-    quit(1)
-
-logging.info("Config file was loaded")
-
-## Fetching the admin.sign_up notification 
-
-notification = mastodon.notifications(types=["admin.sign_up"])
-
-## Processing said notification
-
-greet_cycle()
-
-logging.info("Detected every new sign up notification")
